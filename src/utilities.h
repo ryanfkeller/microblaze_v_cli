@@ -2,16 +2,16 @@
 #define UTILITIES_H
 
 #include <stdio.h>
+#include <array>
 
 
-typedef void(*function_pointer_t)(int, char*[]);
+
+constexpr int MAX_ARGS = 10;
 
 struct cmd_arg_s {
 	int argc;
-	char *argv[];
+	char *argv[MAX_ARGS];
 	};
-
-constexpr int max_args = 10;
 
 extern void disable_io_buffering(void);
 
