@@ -3,6 +3,9 @@
 
 #include "test_cmds.h"
 #include "utilities.h"
+#include "app_context.h"
+
+typedef void(*function_pointer_t)(int argc, char* argv[], AppContext* ctx);
 
 namespace cmd_defs{
 
