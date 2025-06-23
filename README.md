@@ -22,4 +22,4 @@ A lightweight, bare-metal **command-line shell** for the MicroBlaze V RISC‑V s
 
 ## Demo
 
-![UART CLI Demo](/demo/cmd_helper_video.gif)
+![UART CLI Demo](/docs/cmd_helper_video.gif)
