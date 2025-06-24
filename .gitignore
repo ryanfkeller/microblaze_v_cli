@@ -6,6 +6,8 @@
 # Vivado/Vitis generated hardware project
 example_hw/build
 example_platform/build
+example_platform/xsa
+!example_platform/xsa/*.xsa
 example_application/build
 
 

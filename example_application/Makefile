@@ -6,19 +6,24 @@ BUILD_DIR := $(abspath build)
 SCRIPT_DIR := $(abspath scripts)
 
 PLATFORM_NAME := arty_s7_riscv_platform
+XSA_NAME := arty_s7_riscv.xsa
 APP_NAME := arty_s7_riscv_app
 
 PLATFORM_DIR := $(abspath ../example_platform/build/$(PLATFORM_NAME))
 CLI_CORE_DIR := $(abspath ../cli_core)
 
-
-PLATFORM_XPFM := $(PLATFORM_DIR)/export/$(PLATFORM_NAME)/$(PLATFORM_NAME).xpfm
+PLATFORM_EXPORT_DIR := $(PLATFORM_DIR)/export/$(PLATFORM_NAME)
+PLATFORM_XPFM := $(PLATFORM_EXPORT_DIR)/$(PLATFORM_NAME).xpfm
+PLATFORM_XSA := $(PLATFORM_EXPORT_DIR)/hw/$(XSA_NAME)
 PLATFORM_BSP := $(PLATFORM_DIR)/microblaze_riscv_0/standalone_microblaze_riscv_0/bsp
 
 APP_SCRIPT := $(SCRIPT_DIR)/build_arty_s7_riscv_application.py
+RUN_SCRIPT := $(SCRIPT_DIR)/run_arty_s7_riscv_application.py
+
+APP_ELF = "$(BUILD_DIR)/$(APP_NAME)/build/$(APP_NAME).elf" # Expected path of generated ELF files
 
 
-.PHONY: all help application clean check-env make-dirs
+.PHONY: all help app run clean check-env make-dirs
 
 all: help
 
@@ -29,6 +34,8 @@ help:
 	@echo ""
 	@echo "Available targets:"
 	@echo "  app         -- Builds the application component and ELF (.elf) file"
+	@echo "  run		 -- Loads XSA and ELF onto the hardware and starts execution"
+	@echo "  bar		 -- Builds and Runs the application on hardware"
 	@echo "  clean       -- Remove all build artifacts and outputs"
 	@echo ""
 	@echo "Internal helper targets:"
@@ -42,6 +49,10 @@ help:
 app: check-env clean make-dirs
 	@$(VITIS) -s $(APP_SCRIPT) --workspace_dir $(BUILD_DIR) --platform_dir $(PLATFORM_DIR) --cli_core_dir $(CLI_CORE_DIR) --app_name $(APP_NAME)
 
+run: check-env
+	@$(VITIS) -s $(RUN_SCRIPT) --xsa_path $(PLATFORM_XSA) --elf_path $(APP_ELF)
+
+bar: app run
 
 check-env:
 	@command -v $(VITIS) > /dev/null 2>&1 || (echo "ERROR: Vitis not found in PATH. Please source the Xilinx Vitis settings script before running make."; exit 1)
