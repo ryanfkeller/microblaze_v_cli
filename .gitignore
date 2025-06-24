@@ -1,0 +1,21 @@
+# Vitis/Vivado build outputs
+**/.Xil
+*.jou
+*.log
+
+# Vivado/Vitis generated hardware project
+example_hw/build
+example_platform/build
+example_application/build
+
+
+# Python
+__pycache__/
+*.pyc
+
+# Venvs
+.venv/
+
+# VSCode
+.vscode/settings.json
+
