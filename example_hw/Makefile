@@ -19,7 +19,7 @@ all: help
 
 help:
 	@echo "*******************************"
-	@echo "*     XSA Builder Makefile    *"
+	@echo "*     HW Builder Makefile    *"
 	@echo "*******************************"
 	@echo ""
 	@echo "Available targets:"

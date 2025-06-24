@@ -6,6 +6,7 @@
 # Vivado/Vitis generated hardware project
 example_hw/build
 example_platform/build
+example_application/build
 
 
 # Python

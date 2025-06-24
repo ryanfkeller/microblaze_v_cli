@@ -6,7 +6,7 @@ BUILD_DIR := $(abspath build)
 SCRIPT_DIR := $(abspath scripts)
 XSA_DIR := $(abspath xsa)
 
-PLATFORM_NAME := arty_s7_risv_platform
+PLATFORM_NAME := arty_s7_riscv_platform
 PLATFORM_SCRIPT := $(SCRIPT_DIR)/build_arty_s7_riscv_platform.py
 STABLE_XSA := xsa/arty_s7_riscv.xsa
 
@@ -19,11 +19,11 @@ all: help
 
 help:
 	@echo "*******************************"
-	@echo "*     Platform Builder Makefile    *"
+	@echo "*  Platform Builder Makefile  *"
 	@echo "*******************************"
 	@echo ""
 	@echo "Available targets:"
-	@echo "  platform    -- Build the hardware platform (.xpfm) file from stable XSA"
+	@echo "  platform    -- Build the platform component and BSP from stable XSA"
 	@echo "  clean       -- Remove all build artifacts and outputs"
 	@echo ""
 	@echo "Internal helper targets:"
@@ -32,7 +32,7 @@ help:
 	@echo ""
 	@echo "Usage:"
 	@echo "  make [target]"
-	@echo "  For example, run 'make xsa' to build the hardware platform."
+	@echo "  For example, run 'make platform' to build the platform component and BSP."
 	
 platform: clean check-env make-dirs $(XPFM)
 	
