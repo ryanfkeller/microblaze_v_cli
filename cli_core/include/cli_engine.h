@@ -170,8 +170,10 @@ namespace cli_core {
         CommandArgs args;
 
         //Create a mutable copy of the input for tokenization
-        strncpy(input_buffer_, input, CMD_BUFFER_SIZE - 1);
-        input_buffer_[CMD_BUFFER_SIZE - 1] = '\0';
+        if (input != input_buffer_) {
+            strncpy(input_buffer_, input, CMD_BUFFER_SIZE - 1);
+            input_buffer_[CMD_BUFFER_SIZE - 1] = '\0';
+        }
 
         char* token = input_buffer_;
         while (*token && args.argc < MAX_ARGS - 1) {

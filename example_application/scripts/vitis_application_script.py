@@ -362,11 +362,32 @@ class VitisApplicationBuilder:
             self.generate_build_info()
             
             # Add user compiler defines
-            version_define = f'-DVERSION_STRING=\\"{self.build_info["version_string"]}\\"\"'
-            timestamp_define = f'-DTIMESTAMP_STRING=\\"{self.build_info["build_timestamp"]}\\"\"'
+            version_define = f'VERSION_STRING=\\"{self.build_info["version_string"]}\\"\"'
+            timestamp_define = f'TIMESTAMP_STRING=\\"{self.build_info["build_timestamp"]}\\"\"'
             try:
-                self.app_comp.append_app_config(key = 'USER_COMPILE_DEFINITIONS', values = version_define)
-                self.app_comp.append_app_config(key = 'USER_COMPILE_DEFINITIONS', values = timestamp_define)
+                self.app_comp.append_app_config(key = 'USER_COMPILE_DEFINITIONS', values = [version_define, timestamp_define])
+                
+                
+
+                ## DEBUG ##
+                comp_other_flags = [
+                    "-fno-rtti",
+                    "-fno-exceptions",
+                    "-fno-threadsafe-statics",
+                    "-s",
+                    "-ffunction-sections",
+                    "-fdata-sections",
+                    "-Os",
+                ]
+                self.app_comp.set_app_config(key = 'USER_COMPILE_OTHER_FLAGS', values = " ".join(comp_other_flags))
+
+                link_other_flags = [
+                    "-Wl,-Map=output.map",
+                    "-Wl,--gc-sections",
+                ]
+                self.app_comp.set_app_config(key = 'USER_LINK_OTHER_FLAGS', values = " ".join(link_other_flags))
+                [print(n) for n in self.app_comp.get_app_config()]
+
                 print(f"✓ Added compiler defines: ")
                 print(f"     {version_define}")
                 print(f"     {timestamp_define}")
@@ -399,7 +420,6 @@ class VitisApplicationBuilder:
         print(f"\nBuilding application...")
         try:
             build_result = self.app_comp.build()
-            print("✓ Application built successfully")
             
             # Print build results if available
             if hasattr(build_result, 'get_build_log'):

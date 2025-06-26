@@ -1,9 +1,9 @@
 #pragma once
 
-#include "uart_handler.h"
+#include "uart_cli_adapter.h"
 #include "xgpio.h"
 
 struct AppContext {
-    UartHandler& uart_h;
+    cli_core::UartCliAdapter& uart;
     XGpio& gpio;
 };
