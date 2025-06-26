@@ -1,7 +1,6 @@
 #include "uart_handler.h"
 #include "xuartlite.h"
 #include <cstdarg>
-#include <cstdio>
 
 UartHandler::UartHandler(uint32_t uart_base_addr) {
 	XUartLite_Initialize(&uart_, uart_base_addr);
@@ -19,22 +18,6 @@ void UartHandler::send_raw(const char* str) {
 void UartHandler::send_line(const char* str) {
     send_raw(str);
     send_raw("\r\n");
-}
-
-void UartHandler::send_fmt(const char* fmt, ...){
-    constexpr size_t BUFFER_SIZE = 256;
-    char buffer[BUFFER_SIZE];
-
-    va_list args;
-    va_start(args, fmt);
-    int n = vsnprintf(buffer, BUFFER_SIZE, fmt, args);
-    va_end(args);
-
-    if (n > 0) {
-        // Ensure null-terminated string in case of overflow
-        buffer[BUFFER_SIZE - 1] = '\0';
-        send_raw(buffer);
-    }
 }
 
 uint8_t UartHandler::get_byte() {

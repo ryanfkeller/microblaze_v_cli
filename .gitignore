@@ -21,3 +21,7 @@ __pycache__/
 # VSCode
 .vscode/settings.json
 
+# Ignores non-git parser helper
+.*ignore
+.*include
+!.gitignore

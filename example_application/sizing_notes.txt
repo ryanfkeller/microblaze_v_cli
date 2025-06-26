@@ -1,0 +1,16 @@
+
+Baseline size with <cstdio>:
+   text    data     bss     dec     hex filename
+ 134298    2201    4168  140667   2257b arty_s7_riscv_app.elf
+
+After removing <cstdio> and handrolling print_fmt
+   text    data     bss     dec     hex filename
+ 131200    2196    4168  137564   2195c arty_s7_riscv_app.elf
+
+After commandline build optimizations (-fno-rtti -fno-exceptions -fno-threadsafe-statics)
+   text    data     bss     dec     hex filename
+  21774    1696    4000   27470    6b4e arty_s7_riscv_app.elf
+
+After even more optimizations
+   text    data     bss     dec     hex filename
+  19144    1696    3992   24832    6100 arty_s7_riscv_app.elf

@@ -10,7 +10,7 @@
 #include "uart_handler.h"
 #include "cli_engine.h"
 #include "uart_cli_adapter.h"
-#include "xil_printf.h"
+
 #ifndef VERSION_STRING
 #define VERSION_STRING "dev"
 #endif
@@ -34,23 +34,23 @@ void show_banner(cli_core::CliIoInterface& io) {
 }
 
 int main() {
-    xil_printf("help!!");
+
     // Initialize hardware
     static UartHandler uart_h(XPAR_AXI_UARTLITE_0_BASEADDR);
     static XGpio gpio;
     XGpio_Initialize(&gpio, XPAR_AXI_GPIO_0_BASEADDR);
+
+    // Create CLI I/O adapter
+    cli_core::UartCliAdapter uart(uart_h);
     
     // Create application context
-    AppContext app_context{uart_h, gpio};
-    
-    // Create CLI I/O adapter
-    cli_core::UartCliAdapter uart_adapter(uart_h);
+    AppContext app_context{uart, gpio};
     
     // Show application banner
-    show_banner(uart_adapter);
+    show_banner(uart);
     
     // Create and configure CLI engine
-    cli_core::CliEngine<AppContext> cli_engine(uart_adapter, app_context);
+    cli_core::CliEngine<AppContext> cli_engine(uart, app_context);
     cli_engine.register_commands(app_commands::command_list, app_commands::command_count);
     
     // Start CLI main loop

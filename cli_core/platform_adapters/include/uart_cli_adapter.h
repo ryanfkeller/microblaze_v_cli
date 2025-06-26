@@ -2,7 +2,6 @@
 
 #include "cli_io_interface.h"
 #include <cstdarg>
-#include <cstdio>
 
 // Forward declaration -- users will need to provide their own UART handler
 class UartHandler;
@@ -29,6 +28,12 @@ namespace cli_core {
             uint8_t get_byte() override;
         
         private:
+            void send_str(const char* s);
+            void print_uint(unsigned int val, int width = 0, char pad_char = ' ');
+            void print_int(int val, int width = 0, char pad_char = ' ');
+            void print_hex(unsigned int val, int width = 0, char pad_char = ' ');
+
+
             UartHandler& uart_;
             static constexpr size_t FORMAT_BUFFER_SIZE = 256;
     };
