@@ -1,26 +1,34 @@
 # Makefile for preparing example_application with platform BSP and XPFM
 
+# Tools
 VITIS := vitis
+PYTHON := /usr/bin/python
 
-BUILD_DIR := $(abspath build)
-SCRIPT_DIR := $(abspath scripts)
+# Names/Basenames
+PLATFORM := arty_s7_riscv_platform
+XSA := arty_s7_riscv.xsa
+BIT := arty_s7_riscv.bit
+APP := arty_s7_riscv_app
+XPFM := arty_s7_riscv_platform.xpfm
 
-PLATFORM_NAME := arty_s7_riscv_platform
-XSA_NAME := arty_s7_riscv.xsa
-APP_NAME := arty_s7_riscv_app
-
-PLATFORM_DIR := $(abspath ../example_platform/build/$(PLATFORM_NAME))
+# Paths
 CLI_CORE_DIR := $(abspath ../cli_core)
+CLI_INCLUDE_DIR := $(CLI_CORE_DIR)/include
+CLI_ADAPTER_DIR := $(CLI_CORE_DIR)/platform_adapters
 
-PLATFORM_EXPORT_DIR := $(PLATFORM_DIR)/export/$(PLATFORM_NAME)
-PLATFORM_XPFM := $(PLATFORM_EXPORT_DIR)/$(PLATFORM_NAME).xpfm
-PLATFORM_XSA := $(PLATFORM_EXPORT_DIR)/hw/$(XSA_NAME)
+PLATFORM_DIR := $(abspath ../example_platform/build/$(PLATFORM))
+PLATFORM_EXPORT_DIR := $(PLATFORM_DIR)/export/$(PLATFORM)
+PLATFORM_XPFM := $(PLATFORM_EXPORT_DIR)/$(XPFM)
+PLATFORM_XSA := $(PLATFORM_EXPORT_DIR)/hw/$(XSA)
+PLATFORM_BIT := $(PLATFORM_EXPORT_DIR)/hw/$(BIT)
 PLATFORM_BSP := $(PLATFORM_DIR)/microblaze_riscv_0/standalone_microblaze_riscv_0/bsp
 
-APP_SCRIPT := $(SCRIPT_DIR)/build_arty_s7_riscv_application.py
-RUN_SCRIPT := $(SCRIPT_DIR)/run_arty_s7_riscv_application.py
-
-APP_ELF = "$(BUILD_DIR)/$(APP_NAME)/build/$(APP_NAME).elf" # Expected path of generated ELF files
+APP_SRC_DIR := $(abspath src)
+APP_BUILD_DIR := $(abspath build)
+APP_SCRIPT_DIR := $(abspath scripts)
+APP_BUILD_SCRIPT := $(APP_SCRIPT_DIR)/vitis_application_script.py
+APP_RUN_SCRIPT := $(APP_SCRIPT_DIR)/xsdb_platform_script.py
+APP_ELF := "$(APP_BUILD_DIR)/$(APP)/build/$(APP).elf" # Expected path of generated ELF files
 
 
 .PHONY: all help app run clean check-env make-dirs
@@ -47,11 +55,11 @@ help:
 	@echo "  For example, run 'make app' to build the application component and ELF file."
 
 app: check-env clean make-dirs
-	@$(VITIS) -s $(APP_SCRIPT) --workspace_dir $(BUILD_DIR) --platform_dir $(PLATFORM_DIR) --cli_core_dir $(CLI_CORE_DIR) --app_name $(APP_NAME)
+	@$(VITIS) -s $(APP_BUILD_SCRIPT) --workspace_dir $(APP_BUILD_DIR) --platform_dir $(PLATFORM_DIR) --cli_core_dir $(CLI_CORE_DIR) --app_src_dir $(APP_SRC_DIR) --app_name $(APP)
 
 run: check-env
-	@$(VITIS) -s $(RUN_SCRIPT) --xsa_path $(PLATFORM_XSA) --elf_path $(APP_ELF)
-
+	@$(PYTHON) $(APP_RUN_SCRIPT)
+	
 bar: app run
 
 check-env:
@@ -66,7 +74,7 @@ check-env:
 	fi
 
 make-dirs:
-	@mkdir -p $(BUILD_DIR)
+	@mkdir -p $(APP_BUILD_DIR)
 
 clean:
-	rm -rf $(BUILD_DIR)
+	rm -rf $(APP_BUILD_DIR)

@@ -1,58 +1,82 @@
 # microblaze_v_cli
 
-A lightweight, bare-metal **command-line shell** for the MicroBlaze V RISC‑V soft-core, using AXI UARTLite for serial communication.
+A lightweight, bare-metal **command-line shell** for the **MicroBlaze V RISC‑V** soft-core, built using a modular CLI library and targeting serial communication via AXI UARTLite.
 
 ---
 
-## Project Overview
+## Overview
 
-`microblaze_v_cli` is a minimal UART-driven command-line interface designed for testing and diagnostics on bare-metal systems. Originally developed for the Arty S7 board, it is portable to any MicroBlaze V system with UARTLite support.
+`microblaze_v_cli` combines a reusable CLI core library with an example application tailored for diagnostics and development on **bare-metal MicroBlaze V systems**. Originally developed for the **Arty S7-50** board, this project is portable to any platform with compatible IO driver devlopment.
 
-### Key Features
+---
 
-- Interactive UART shell with `cmd>` prompt and basic line editing (backspace, CRLF handling)
-- Command registration via a simple function pointer table
-- Manual argument parsing (no `strtok`, no dynamic memory)
-- Lightweight and hardware-focused design suitable for embedded workflows
+## Repository Structure
+
+```
+microblaze_v_cli/
+├── cli_core/              # Standalone CLI library (hardware-agnostic)
+├── example_application/   # Demo CLI application for Arty S7-50
+├── example_platform/      # Vitis platform component
+├── example_hw/            # Vivado hardware design
+└── docs/                  # Documentation and media
+```
+
+---
+
+## CLI Features
+
+The `cli_core` library is:
+
+- **Hardware Agnostic**: Pluggable I/O interface (UART, USB, etc.)
+- **Zero Dynamic Allocation**: Statically registered commands
+- **Template-Based**: Supports any user-defined context
+- **Extensible**: Add custom commands and transports easily
+- **Optimized for Embedded**: Minimal memory footprint
+
+In the example application:
+
+- UART CLI shell with `mbv>` prompt
+- Line editing: backspace support, CRLF handling
+- Manual argument parsing (no `strtok`)
+- Commands implemented for LED GPIO control and testing
+
+See [`cli_core/README.md`](./cli_core/README.md) for full CLI engine documentation.
+
+---
+
+## UART CLI Demo
+
+![UART CLI Demo](/docs/mbv_demo.gif)
+
+---
 
 ## Toolchain
 
-- Built with **AMD Vivado/Vitis 2025.1**
-- Targeting **bare-metal Microblaze V** systems (no OS dependencies)
-
-## Demo
-
-![UART CLI Demo](/docs/cmd_helper_video.gif)
+- **Vivado/Vitis 2025.1**
+- **MicroBlaze V**, bare-metal (no OS)
+- Tested on **Linux** (CLI + Makefile flow)
 
 ---
 
-## Getting Started with the Examples
-
-This repository includes scripts and Makefiles to build and run example hardware, platform, and application components targeting the **Arty S7-50** board with **Vivado/Vitis 2025.1**.
+## Getting Started
 
 ### Prerequisites
 
-- Linux environment (Windows and Mac users may need to adapt paths and tooling)
-- AMD Vivado and Vitis 2025.1 installed
+- Linux system with Vivado/Vitis 2025.1 installed
+- `make`, `bash`, and standard Unix tooling
 
-### Environment Setup
-
-In new bash environments, prior to running any builds, source the Vivado and Vitis settings script:
+Before building, source the Xilinx environment:
 
 ```bash
 source /path/to/Vivado/2025.1/settings64.sh
 source /path/to/Vitis/2025.1/settings64.sh
 ```
 
-## Build Steps
+---
 
-The examples are organized into three components with corresponding Makefiles:
+## Build Instructions
 
-1. **Hardware (example_hw)**
-2. **Platform (example_platform)**
-3. **Application (example_application)**
-
-You can build all steps in sequence, or skip hardware and build platform and application directly using the stable `.xsa` included.
+You can build hardware, platform, and application components using the provided Makefiles. A prebuilt `.xsa` is included to skip hardware steps if needed.
 
 ### 1. Build Hardware
 
@@ -60,8 +84,8 @@ You can build all steps in sequence, or skip hardware and build platform and app
 cd example_hw
 make hw
 ```
-This generates the hardware design and exports the .xsa file for the Arty S7-50 in the `example_hw/build/out` directory. This will need to be transfered to the `example_platform/xsa` directory to replace the checked-in version.
 
+Generates `.xsa` in `example_hw/build/out/`. To use this output, copy it to `example_platform/xsa/`.
 
 ### 2. Build Platform
 
@@ -69,7 +93,8 @@ This generates the hardware design and exports the .xsa file for the Arty S7-50 
 cd ../example_platform
 make platform
 ```
-This creates the Vitis platform component from the stable .xsa in the `example_platform/xsa` directory. The stable .xsa is included in this folder to allow platform and application builds without rebuilding hardware.
+
+Builds a Vitis platform using the `.xsa` from the previous step (or the included stable version).
 
 ### 3. Build Application
 
@@ -77,18 +102,46 @@ This creates the Vitis platform component from the stable .xsa in the `example_p
 cd ../example_application
 make app
 ```
-This builds the example MicroBlaze V CLI application using the platform component. The final ELF binary is located at `example_application/build/arty_s7_riscv_app/build/arty_s7_riscv_app.elf`
 
-## Notes
+Builds the example CLI application using `cli_core`. Output ELF is:
 
-- The **hardware and platform components are specific to the Arty S7-50 board** and tested with Vivado/Vitis 2025.1.
-- The **example application can be rebuilt for other MicroBlaze V systems**, but may require adaptation.
-- This setup assumes a **clean Linux environment**. Windows and Mac users will need to adjust environment setup and commands accordingly.
-- Before running `make`, **ensure you have sourced the Vivado and Vitis environment scripts**, e.g.:
-  
+```
+example_application/build/arty_s7_riscv_app/build/arty_s7_riscv_app.elf
+```
+
+---
+
+## Project Notes
+
+- **Platform-specific**: Hardware and platform builds are currently specific to the Arty S7-50.
+- **Portable CLI**: The CLI core is reusable and decoupled from UART; other transports can be added.
+- **Modifiable Application Context**: Easily adapt the `AppContext` to control other peripherals.
+- **Cross-platform developers**: Windows/macOS users may need to adapt paths and shell tools.
+
+---
+
+## Integration Options
+
+You can use the CLI core library via:
+
+- **Copy-and-include**: Add `cli_core/include/` and optional platform adapter sources
+- **Git Submodule**:
   ```bash
-  source /tools/Xilinx/2025.1/Vivado/settings64.sh
-  source /tools/Xilinx/2025.1/Vitis/settings64.sh
+  git submodule add <repo-url> libs/cli_core
   ```
 
-  Feel free to open issues or contribute!
+See the example application for both integration and usage patterns.
+
+---
+
+## Resources
+
+- [`cli_core/README.md`](./cli_core/README.md): CLI architecture and usage
+- [`example_application/`](./example_application/): GPIO command examples and CLI shell setup
+- [`docs/`](./docs/): Demo GIFs and diagrams (if any)
+
+---
+
+## Contributing
+
+Pull requests and issues are welcome! This project is intended for educational and development purposes in bare-metal RISC-V systems.
