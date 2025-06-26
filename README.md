@@ -46,7 +46,7 @@ See [`cli_core/README.md`](./cli_core/README.md) for full CLI engine documentati
 
 ## UART CLI Demo
 
-![UART CLI Demo](/docs/cmd_helper_video.gif)
+![UART CLI Demo](/docs/mbv_demo.gif)
 
 ---
 
