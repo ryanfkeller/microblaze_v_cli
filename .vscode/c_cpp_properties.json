@@ -1,0 +1,20 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/example_platform/build/**/include",
+                "${workspaceFolder}/cli_core/include",
+                "${workspaceFolder}/cli_core/platform_adapters/include",
+                "${workspaceFolder}/example_application/src"
+
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c17",
+            "cppStandard": "gnu++17",
+            "intelliSenseMode": "linux-gcc-x64"
+        }
+    ],
+    "version": 4
+}
