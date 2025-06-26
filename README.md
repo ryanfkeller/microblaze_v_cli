@@ -138,10 +138,10 @@ See the example application for both integration and usage patterns.
 
 - [`cli_core/README.md`](./cli_core/README.md): CLI architecture and usage
 - [`example_application/`](./example_application/): GPIO command examples and CLI shell setup
-- [`docs/`](./docs/): Demo GIFs and diagrams (if any)
+- [`docs/`](./docs/): Demo GIFs and diagrams (TBR)
 
 ---
 
 ## Contributing
 
-Pull requests and issues are welcome! This project is intended for educational and development purposes in bare-metal RISC-V systems.
+Pull requests and issues are welcome! This project is intended for educational and development purposes.
